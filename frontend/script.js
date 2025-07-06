@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_URL = 'http://localhost:8000';
+    const API_URL = 'https://app-7q6o.onrender.com';
 
     // As variáveis globais são declaradas aqui.
     let navLinks, contentSections, modals, forms;
