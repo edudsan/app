@@ -2,15 +2,23 @@
 
 FROM python:3.11-slim
 
-RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/apt/lists/*
+# NOVO: Instala o dos2unix junto com o cliente postgresql
+# O dos2unix converte arquivos de texto do formato Windows para o formato Unix.
+RUN apt-get update && apt-get install -y postgresql-client dos2unix && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Passo 1: Copia o script para dentro do container
+# Copia o script para dentro do container
 COPY ./wait-for-db.sh /app/wait-for-db.sh
 
-# Passo 2: DÁ A PERMISSÃO DE EXECUÇÃO - ESTA É A LINHA CRÍTICA!
+# --- INÍCIO DA CORREÇÃO ROBUSTA ---
+# Passo 1 (NOVO): Converte o script de line endings do Windows (CRLF) para Unix (LF).
+# Isso previne erros de execução em ambientes Linux.
+RUN dos2unix /app/wait-for-db.sh
+
+# Passo 2: DÁ A PERMISSÃO DE EXECUÇÃO
 RUN chmod +x /app/wait-for-db.sh
+# --- FIM DA CORREÇÃO ROBUSTA ---
 
 # Instala as dependências
 COPY requirements.txt .
