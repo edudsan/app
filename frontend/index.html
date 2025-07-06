@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Locadora</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">Locadora System</div>
+        <div class="nav-links">
+            <a href="#clientes" class="nav-link active" data-section="clientes-section">Clientes</a>
+            <a href="#veiculos" class="nav-link" data-section="veiculos-section">Veículos</a>
+            <a href="#reservas" class="nav-link" data-section="reservas-section">Reservas</a>
+            <a href="#extras" class="nav-link" data-section="extras-section">Extras</a>
+        </div>
+    </nav>
+    <main class="container">
+        <section id="clientes-section" class="content-section active">
+            <div class="section-header">
+                <h2>Gerenciar Clientes</h2>
+                <button class="btn-add" data-type="cliente">Adicionar Cliente</button>
+            </div>
+            <div id="clientes-table-container" class="table-container"></div>
+        </section>
+
+        <section id="veiculos-section" class="content-section">
+            <div class="section-header">
+                <h2>Gerenciar Veículos</h2>
+                <button class="btn-add" data-type="veiculo">Adicionar Veículo</button>
+            </div>
+            <div id="veiculos-table-container" class="table-container"></div>
+        </section>
+
+        <section id="reservas-section" class="content-section">
+             <div class="section-header">
+                <h2>Gerenciar Reservas</h2>
+                <button class="btn-add" data-type="reserva">Adicionar Reserva</button>
+            </div>
+            <div id="reservas-table-container" class="table-container"></div>
+        </section>
+
+        <section id="extras-section" class="content-section">
+            <div class="section-header">
+                <h2>Relatórios</h2>
+            </div>
+            <div class="actions-panel">
+                <div class="action-box">
+                    <h4>Buscar Veículos Disponíveis</h4>
+                    <form id="form-busca-veiculos">
+                        <label for="busca-inicio">De:</label>
+                        <input type="date" id="busca-inicio" required>
+                        <label for="busca-fim">Até:</label>
+                        <input type="date" id="busca-fim" required>
+                        <button type="submit" class="btn-action">Buscar</button>
+                    </form>
+                </div>
+                <div class="action-box">
+                    <h4>Relatório de Faturamento</h4>
+                    <form id="form-relatorio-faturamento">
+                        <label for="relatorio-inicio">De:</label>
+                        <input type="date" id="relatorio-inicio" required>
+                        <label for="relatorio-fim">Até:</label>
+                        <input type="date" id="relatorio-fim" required>
+                        <button type="submit" class="btn-action">Gerar</button>
+                    </form>
+                </div>
+            </div>
+            <div id="busca-veiculos-result-container" class="result-container"></div>
+            <div id="relatorio-faturamento-result-container" class="result-container"></div>
+        </section>
+    </main>
+
+    <dialog id="modal-cliente">
+        <form id="form-cliente">
+            <h3 id="cliente-modal-title">Adicionar Novo Cliente</h3>
+            <input type="hidden" id="cliente-id">
+            <label for="cliente-tipo-pessoa">Tipo de Cliente:</label>
+            <select id="cliente-tipo-pessoa"><option value="PF" selected>Pessoa Física</option><option value="PJ">Pessoa Jurídica</option></select>
+            <input type="text" id="cliente-nome" placeholder="Nome Completo / Razão Social" required>
+            <input type="email" id="cliente-email" placeholder="E-mail" required>
+            <input type="text" id="cliente-telefone" placeholder="Telefone">
+            <div id="campo-cpf"><input type="text" id="cliente-cpf" placeholder="CPF"></div>
+            <div id="campo-cnpj" style="display: none;"><input type="text" id="cliente-cnpj" placeholder="CNPJ"></div>
+            <hr>
+            <h4>Endereço</h4>
+            <input type="text" id="endereco-rua" placeholder="Rua" required>
+            <input type="text" id="endereco-bairro" placeholder="Bairro">
+            <input type="text" id="endereco-cidade" placeholder="Cidade" required>
+            <input type="text" id="endereco-estado" placeholder="Estado (UF)" maxlength="2" required>
+            <input type="number" id="endereco-numero" placeholder="Número">
+            <div class="modal-actions"><button type="submit" class="btn-save">Salvar</button><button type="button" class="btn-close">Cancelar</button></div>
+        </form>
+    </dialog>
+    
+    <dialog id="modal-veiculo">
+        <form id="form-veiculo">
+            <h3 id="veiculo-modal-title">Adicionar Novo Veículo</h3>
+            <input type="hidden" id="veiculo-id">
+            <input type="text" id="veiculo-placa" placeholder="Placa" required>
+            <input type="text" id="veiculo-modelo" placeholder="Modelo" required>
+            <input type="text" id="veiculo-marca" placeholder="Marca">
+            <input type="number" id="veiculo-ano" placeholder="Ano">
+            <input type="number" step="0.01" id="veiculo-diaria" placeholder="Valor da Diária" required>
+            <div class="modal-actions">
+                <button type="submit" class="btn-save">Salvar</button>
+                <button type="button" class="btn-close">Cancelar</button>
+            </div>
+        </form>
+    </dialog>
+
+     <dialog id="modal-reserva">
+        <form id="form-reserva">
+            <h3 id="reserva-modal-title">Adicionar Nova Reserva</h3>
+            <input type="hidden" id="reserva-id">
+            <label for="reserva-cliente">Cliente:</label>
+            <select id="reserva-cliente" required><option value="">Carregando...</option></select>
+            <label for="reserva-veiculo">Veículo:</label>
+            <select id="reserva-veiculo" required><option value="">Carregando...</option></select>
+            <label for="reserva-inicio">Data de Início:</label>
+            <input type="date" id="reserva-inicio" required>
+            <label for="reserva-fim">Data de Fim:</label>
+            <input type="date" id="reserva-fim" required>
+             <label for="reserva-tipo">Tipo de Reserva:</label>
+            <select id="reserva-tipo" required>
+                <option value="Normal">Normal</option>
+                <option value="Reduzida">Reduzida</option>
+                <option value="Mensal">Mensal</option>
+            </select>
+            <div class="modal-actions">
+                <button type="submit" class="btn-save">Salvar</button>
+                <button type="button" class="btn-close">Cancelar</button>
+            </div>
+        </form>
+    </dialog>
+    
+    <script src="/static/script.js"></script>
+</body>
+</html>

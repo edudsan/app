@@ -1,0 +1,24 @@
+[MAIN]
+# Adiciona a pasta src como uma raiz de código-fonte para resolver erros de importação.
+source-roots=src
+
+[MESSAGES CONTROL]
+# Desativa avisos comuns que são mais uma questão de preferência.
+disable=
+    missing-module-docstring,
+    missing-class-docstring,
+    missing-function-docstring,
+    too-few-public-methods,
+    multiple-statements,
+    useless-return,
+    too-many-locals,
+    unnecessary-pass
+
+[TYPECHECK]
+# Adiciona psycopg2.errors a uma 'lista branca' para evitar falsos positivos
+# de "no-member", pois o Pylint não consegue analisar extensões em C.
+generated-members=psycopg2.errors.*
+
+[FORMAT]
+# Define um comprimento máximo de linha de 80 caracteres.
+max-line-length=120

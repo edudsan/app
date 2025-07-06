@@ -1,0 +1,53 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: locadora_db
+    env_file:
+      - .env
+    volumes:
+      - ./database/init:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: locadora_app
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      - db
+    restart: unless-stopped
+    command: ["./wait-for-db.sh", "uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  tests:
+    build: .
+    env_file:
+      - .env
+    # CORRIGIDO: Garante que o PYTHONPATH está definido para os testes também
+    environment:
+      - PYTHONPATH=.
+    depends_on:
+      - db
+    command: ["./wait-for-db.sh", "pytest"]
+
+  # NOVO: Serviço 'lint' adicionado de volta
+  lint:
+    build: .
+    environment:
+      - PYTHONPATH=.
+    # Não precisa de depends_on pois a análise é estática
+    command: ["pylint", "src"]
+
+volumes:
+  postgres_data:

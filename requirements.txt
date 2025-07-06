@@ -1,0 +1,10 @@
+# requirements.txt
+psycopg2-binary
+python-dotenv
+fastapi
+uvicorn[standard]
+email-validator
+jinja2
+pytest
+httpx
+pylint
